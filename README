@@ -1,0 +1,15 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=2317
+
+The most convenient way to navigate currently opened buffers.
+
+Default hot key is F3.
+
+Initially, QuickName display the full list of opened buffers in a compact way (multi-column) inside command area. As you type, QuickName narrows the list to only buffers with matched name. Hit <Enter> to open selected buffer. Hit <Esc> or hot key (default F3) again to close QuickName.
+
+When QuickName is active, arrow keys and backspace function as expected.
+
+Matching rule: thefile.vim can be matched with any of thefil, thefi.vim, thfl.vm. Guess why!
+
+Should QuickName integrate with QuickBuf, and how?
+Any ideas and bug reports, please send to palnart@gmail.com.
+
