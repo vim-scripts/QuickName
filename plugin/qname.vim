@@ -1,3 +1,7 @@
+if v:version < 700
+	finish
+endif
+
 if !exists("g:qname_hotkey") || g:qname_hotkey == ""
 	let g:qname_hotkey = "<F3>"
 endif
@@ -20,13 +24,18 @@ function! QNameRun()
 
 	if _key == "\<BS>"
 		let s:inp = s:inp[:-2]
+	elseif _key == "\<C-U>"
+		let s:inp = ""
 	elseif strlen(_key) == 1 && char2nr(_key) > 31
 		let s:inp = s:inp._key
 	endif
-	if _key == "\<ESC>" || _key == "\<CR>"
+	if _key == "\<ESC>" || _key == "\<CR>" || _key == "\<S-CR>"
 		let _sel = s:colPrinter.sel
-		if _key == "\<CR>" && _sel < len(s:n) && _sel >= 0
-			call s:swb(matchstr(s:s[_sel], '<\zs\d\+\ze>'),"")
+		if _key != "\<ESC>" && _sel < len(s:n) && _sel >= 0
+			if _key == "\<S-CR>"
+				:split
+			endif
+			call s:swb(str2nr(matchstr(s:s[_sel], '<\zs\d\+\ze>')))
 		endif
 		cal QNameInit(0)
 	elseif _key == "\<Up>"
@@ -82,9 +91,9 @@ function! s:build()
 	endif
 endfunc
 
-function! s:swb(bno,mod)
+function! s:swb(bno)
 	if bufwinnr(a:bno) == -1
-		exe "hid b".a:mod a:bno
+		exe "hid b" a:bno
 	else
 		exe bufwinnr(a:bno) . "winc w"
 	endif
@@ -110,7 +119,7 @@ function! s:baselist()
 			let _bno = matchstr(_line, '^ *\zs\d*')+0
 			let _fname = substitute(expand("#"._bno.":p"), '\', '/', 'g')
 			if _fname == ""
-				let _fname = "\xA0".matchstr(_line, '"\zs[^"]*')
+				let _fname = "|".matchstr(_line, '"\[\zs[^\]]*')."|"
 			endif
 			let _name = fnamemodify(_fname,":t")
 			cal add(s:ls, _name." <"._bno."> ".fnamemodify(_fname,":h"))
